@@ -1,0 +1,14 @@
+@theme {
+  /* Brand Core Palette */
+  --color-brand-bg: #2b2d34;
+  --color-brand-60: #383a44;
+  --color-brand-30: #e63946;
+  --color-brand-10: #eaeaea;
+
+  /* Telemetry Semantic Accent Colors */
+  --color-accent-blue: #38BDF8;
+  --color-accent-green: #10B981;
+  --color-accent-red: #EF4444;
+  --color-accent-purple: #A855F7;
+  --color-accent-yellow: #F59E0B;
+}
