@@ -4,27 +4,31 @@ import { ChevronDown, Check } from 'lucide-react';
 
 const selectSizeMap = {
   sm: {
-    trigger: 'h-7 text-[11px] px-2.5 rounded-lg',
-    triggerOpen: 'rounded-t-lg rounded-b-none',
+    trigger: 'h-7 text-[11px] px-2.5',
+    roundedClosed: 'rounded-lg',
+    roundedOpen: 'rounded-t-lg',
     iconSize: 'w-3 h-3',
     item: 'px-2.5 py-1.5 text-[11px] rounded-md',
     menu: 'rounded-b-lg p-1',
   },
   md: {
-    trigger: 'h-8 text-xs px-3 rounded-xl',
-    triggerOpen: 'rounded-t-xl rounded-b-none',
+    trigger: 'h-8 text-xs px-3',
+    roundedClosed: 'rounded-xl',
+    roundedOpen: 'rounded-t-xl',
     iconSize: 'w-3.5 h-3.5',
     item: 'px-3 py-1.5 text-xs rounded-lg',
     menu: 'rounded-b-xl p-1.5',
   },
   lg: {
-    trigger: 'h-[38px] text-sm px-3.5 rounded-xl',
-    triggerOpen: 'rounded-t-xl rounded-b-none',
+    trigger: 'h-[38px] text-sm px-3.5',
+    roundedClosed: 'rounded-xl',
+    roundedOpen: 'rounded-t-xl',
     iconSize: 'w-4 h-4',
     item: 'px-3.5 py-2 text-sm rounded-lg',
     menu: 'rounded-b-xl p-1.5',
   },
 };
+
 
 /**
  * Standard Frosted Glass Select Dropdown Component
@@ -123,9 +127,10 @@ export function Select({
         onClick={toggleOpen}
         className={`w-full text-brand-10 flex items-center justify-between outline-none transition-all cursor-pointer font-medium ${sz.trigger} ${
           isOpen
-            ? `bg-brand-bg/95 border border-brand-30 border-b-transparent shadow-[0_0_8px_rgba(230,57,70,0.15)] ${sz.triggerOpen}`
-            : 'glass-control hover:border-brand-10/30'
+            ? `bg-brand-bg/95 border border-brand-30 border-b-transparent shadow-[0_0_8px_rgba(230,57,70,0.15)] ${sz.roundedOpen}`
+            : `glass-control hover:border-brand-10/30 ${sz.roundedClosed}`
         } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+
       >
         <span className="truncate font-semibold">
           {selectedOption ? selectedOption.label : placeholder}
