@@ -4,12 +4,7 @@
   --font-mono: "Red Hat Mono", "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
-@layer base {
-  body, html {
-    font-family: var(--font-sans);
-    font-weight: 300;
-  }
-}
+
 
 /* 
  * True Tabular / Monospaced Numbers

@@ -92,37 +92,8 @@ input[type=number] {
   animation: cm-dropdown-down 0.12s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Dev Sandbox Dynamic Surface Animations */
-@keyframes cm-sandbox-drift {
-  0% { transform: translateY(0%); }
-  50% { transform: translateY(-50%); }
-  100% { transform: translateY(0%); }
-}
-.animate-sandbox-drift {
-  animation: cm-sandbox-drift 9s ease-in-out infinite;
-}
-
-@keyframes cm-sandbox-gradient {
-  0% { background-position: 0% 50%; }
-  100% { background-position: -200% 50%; }
-}
-.animate-sandbox-gradient {
-  background: linear-gradient(
-    90deg, 
-    #e63946 0%, 
-    #a855f7 15%, 
-    #38bdf8 30%, 
-    #10b981 45%, 
-    #f59e0b 60%, 
-    #e63946 75%, 
-    #a855f7 90%, 
-    #38bdf8 100%
-  );
-  background-size: 200% 100%;
-  animation: cm-sandbox-gradient 6s linear infinite;
-}
-
 /* ========================================================================= */
+
 /* Universal Glass Table Styling Utilities                                   */
 /* ========================================================================= */
 .glass-table {
