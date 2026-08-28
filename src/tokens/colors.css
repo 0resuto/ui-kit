@@ -1,6 +1,7 @@
 @theme {
   /* Brand Core Palette */
   --color-brand-bg: #2b2d34;
+  --color-brand-bg-deep: #1a1b1e;
   --color-brand-60: #383a44;
   --color-brand-30: #e63946;
   --color-brand-10: #eaeaea;
