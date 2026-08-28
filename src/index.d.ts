@@ -160,10 +160,19 @@ export interface SelectOption<T = any> {
   label: string;
 }
 
+export interface SelectGroup<T = any> {
+  group?: string;
+  label?: string;
+  items?: Array<SelectOption<T> | string | number>;
+  options?: Array<SelectOption<T> | string | number>;
+}
+
+export type SelectOptionItem<T = any> = SelectOption<T> | SelectGroup<T> | string | number;
+
 export interface SelectProps<T = any> {
   value?: T;
   onChange?: (value: T) => void;
-  options?: Array<SelectOption<T> | string | number>;
+  options?: Array<SelectOptionItem<T>>;
   placeholder?: string;
   size?: ControlSize;
   disabled?: boolean;
@@ -171,6 +180,7 @@ export interface SelectProps<T = any> {
 }
 
 export declare function Select<T = any>(props: SelectProps<T>): React.ReactElement | null;
+
 
 export interface CheckboxProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'checked'> {
   checked?: boolean;

@@ -11,6 +11,33 @@ export const serviceOptions = [
   { value: 'Distributed Cache Pool (AP-South)', label: 'Distributed Cache Pool (AP-South)' },
 ];
 
+export const groupedSessionOptions = [
+  {
+    group: 'Practice 1',
+    items: [
+      { value: 'p1-lap1', label: 'Lap 1 (64.38s)' },
+      { value: 'p1-lap2', label: 'Lap 2 (63.92s)' },
+      { value: 'p1-lap3', label: 'Lap 3 (63.45s)' },
+    ],
+  },
+  {
+    group: 'Qualifying',
+    items: [
+      { value: 'q-lap1', label: 'Lap 1 (62.18s)' },
+      { value: 'q-lap2', label: 'Lap 2 (61.84s)' },
+    ],
+  },
+  {
+    group: 'Race',
+    items: [
+      { value: 'r-lap1', label: 'Lap 1 (65.10s)' },
+      { value: 'r-lap2', label: 'Lap 2 (64.02s)' },
+      { value: 'r-lap3', label: 'Lap 3 (63.88s)' },
+    ],
+  },
+];
+
+
 export const colorOptions = [
   { value: 'brand-30', label: 'Brand Crimson (#e63946)' },
   { value: 'accent-green', label: 'Emerald Green (#10B981)' },

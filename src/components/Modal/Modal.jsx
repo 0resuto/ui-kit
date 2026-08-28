@@ -83,8 +83,9 @@ export function Modal({
     >
       {/* Modal Dialog Window */}
       <div
-        className={`w-full ${currentSize} glass-dropdown rounded-2xl border border-brand-10/15 p-6 shadow-2xl space-y-4 dropdown-unroll select-none ${className}`}
+        className={`w-full ${currentSize} glass-dropdown rounded-2xl border border-brand-10/15 p-6 shadow-2xl space-y-4 dropdown-unroll select-none font-sans text-brand-10 text-left antialiased ${className}`}
       >
+
         {/* Modal Header */}
         {(title || showClose) && (
           <div className="flex items-start justify-between gap-4 border-b border-brand-60/60 pb-3.5">

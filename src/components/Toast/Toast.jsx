@@ -48,8 +48,9 @@ export function ToastItem({ toast, onDismiss }) {
     <div
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
-      className="pointer-events-auto w-full glass-dropdown rounded-xl border border-brand-10/15 p-3.5 shadow-2xl space-y-1.5 dropdown-unroll select-none transition-all duration-200"
+      className="pointer-events-auto w-full glass-dropdown rounded-xl border border-brand-10/15 p-3.5 shadow-2xl space-y-1.5 dropdown-unroll select-none transition-all duration-200 font-sans text-brand-10 text-left antialiased"
     >
+
       <div className="flex items-start justify-between gap-2.5">
         <div className="flex items-start gap-2.5 min-w-0">
           <div className="relative mt-0.5 shrink-0">

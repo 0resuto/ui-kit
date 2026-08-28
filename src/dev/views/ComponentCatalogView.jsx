@@ -30,7 +30,7 @@ import {
   Tooltip, 
   useToast 
 } from '../../index.js';
-import { colorOptions, serviceOptions, clusterNodesData } from '../data/mockData.js';
+import { colorOptions, serviceOptions, groupedSessionOptions, clusterNodesData } from '../data/mockData.js';
 
 /**
  * Official UI Component Explorer & Reference Catalog
@@ -55,6 +55,8 @@ export function ComponentCatalogView({
   const [demoCheckbox2, setDemoCheckbox2] = useState(false);
   const [demoPillVal, setDemoPillVal] = useState('daily');
   const [demoActiveTab, setDemoActiveTab] = useState('security');
+  const [demoSession, setDemoSession] = useState('p1-lap1');
+
 
   return (
     <div className="space-y-8">
@@ -307,7 +309,7 @@ export function ComponentCatalogView({
           </h3>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="space-y-1">
             <label className="text-xs font-semibold text-brand-10/80">Text Input with Clear (X):</label>
             <Input placeholder="Type something..." defaultValue="Sample text value" />
@@ -319,14 +321,24 @@ export function ComponentCatalogView({
           </div>
 
           <div className="space-y-1">
-            <label className="text-xs font-semibold text-brand-10/80">Frosted Glass Select:</label>
+            <label className="text-xs font-semibold text-brand-10/80">Flat Glass Select:</label>
             <Select
               value={selectedService}
               onChange={setSelectedService}
               options={serviceOptions}
             />
           </div>
+
+          <div className="space-y-1">
+            <label className="text-xs font-semibold text-brand-10/80">Grouped (optgroup) Select:</label>
+            <Select
+              value={demoSession}
+              onChange={setDemoSession}
+              options={groupedSessionOptions}
+            />
+          </div>
         </div>
+
 
         {/* Dedicated Checkbox Test Grid */}
         <div className="pt-3 border-t border-brand-60/40">
