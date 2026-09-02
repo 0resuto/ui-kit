@@ -330,6 +330,7 @@ export interface RailProps {
   topActions?: RailAction[];
   bottomActions?: RailAction[];
   isDrawerOpen?: boolean;
+  showShadow?: boolean;
   className?: string;
 }
 

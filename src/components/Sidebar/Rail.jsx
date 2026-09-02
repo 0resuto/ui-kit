@@ -10,26 +10,30 @@ import React from 'react';
  * @param {Array} [props.topActions=[]]
  * @param {Array} [props.bottomActions=[]]
  * @param {boolean} [props.isDrawerOpen=false]
+ * @param {boolean} [props.showShadow=false]
  * @param {string} [props.className='']
  */
 export function Rail({
   topActions = [],
   bottomActions = [],
   isDrawerOpen = false,
+  showShadow = false,
   className = '',
 }) {
   return (
     <>
-      {/* 1. Dedicated Background Shadow Layer (Z-0) */}
+      {/* 1. Optional Dedicated Background Shadow Layer (Z-0) */}
       {/* Casts shadow strictly onto the wallpaper below content cards */}
-      <div
-        aria-hidden="true"
-        className={`fixed top-0 left-0 bottom-0 w-14 z-0 pointer-events-none transition-opacity duration-300 ${
-          isDrawerOpen 
-            ? 'opacity-0' 
-            : 'opacity-100 shadow-[14px_0_32px_-4px_rgba(0,0,0,0.42),6px_0_12px_-2px_rgba(0,0,0,0.25)]'
-        }`}
-      />
+      {showShadow && (
+        <div
+          aria-hidden="true"
+          className={`fixed top-0 left-0 bottom-0 w-14 z-0 pointer-events-none transition-opacity duration-300 ${
+            isDrawerOpen 
+              ? 'opacity-0' 
+              : 'opacity-100 shadow-lg'
+          }`}
+        />
+      )}
 
       {/* 2. Primary Navigation Rail (Z-50) */}
       {/* Sits above everything without projecting top-level overlay shadow onto cards */}
