@@ -11,6 +11,11 @@ import { X } from 'lucide-react';
  * @param {React.ReactNode} [description]
  * @param {React.ElementType} [icon]
  * @param {'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | 'full'} [size='md']
+ * @param {boolean} [fixedHeight=false] Fixes modal to full available viewport height
+ * @param {boolean} [fill=false] Alias for fixedHeight
+ * @param {boolean} [scrollable=true] Whether the body container should have vertical scroll
+ * @param {boolean} [noPadding=false] Removes default px-6 py-4 padding for edge-to-edge content (tables, editors)
+ * @param {string} [bodyClassName=''] Custom className for the modal body container
  * @param {boolean} [showClose=true]
  * @param {boolean} [closeOnBackdropClick=true]
  * @param {boolean} [closeOnEscape=true]
@@ -25,12 +30,18 @@ export function Modal({
   description,
   icon: Icon,
   size = 'md',
+  fixedHeight = false,
+  fill = false,
+  scrollable = true,
+  noPadding = false,
+  bodyClassName = '',
   showClose = true,
   closeOnBackdropClick = true,
   closeOnEscape = true,
   footer,
   className = '',
   children,
+  ...props
 }) {
   // Lock body scrolling when modal is active
   useEffect(() => {
@@ -70,6 +81,18 @@ export function Modal({
   };
 
   const currentSize = sizeClasses[size] || sizeClasses.md;
+  const isFixed = fixedHeight || fill;
+  const heightClass = isFixed
+    ? 'h-[calc(100dvh-2rem)] sm:h-[calc(100dvh-3.5rem)]'
+    : 'max-h-[calc(100dvh-2rem)] sm:max-h-[calc(100dvh-3.5rem)]';
+
+  const paddingClasses = noPadding
+    ? 'p-0'
+    : `px-6 ${title || showClose ? 'py-4' : 'pt-6 pb-4'} ${!footer ? 'pb-6' : ''}`;
+
+  const overflowClasses = scrollable
+    ? 'overflow-y-auto custom-scrollbar overscroll-contain'
+    : 'overflow-hidden';
 
   const handleBackdropClick = (e) => {
     if (e.target === e.currentTarget && closeOnBackdropClick && onClose) {
@@ -81,12 +104,14 @@ export function Modal({
     <div
       role="dialog"
       aria-modal="true"
+      aria-label={typeof title === 'string' ? title : 'Modal'}
       onClick={handleBackdropClick}
-      className="fixed inset-0 z-[99990] bg-black/65 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 overflow-y-auto animate-fade-in"
+      className="fixed inset-0 z-[99990] bg-black/65 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 overflow-y-auto overscroll-contain animate-fade-in"
     >
       {/* Modal Dialog Window */}
       <div
-        className={`w-full ${currentSize} max-h-[calc(100dvh-2rem)] sm:max-h-[calc(100dvh-3.5rem)] flex flex-col glass-dropdown rounded-2xl border border-brand-10/15 shadow-2xl dropdown-unroll select-none font-sans text-brand-10 text-left antialiased overflow-hidden ${className}`}
+        className={`w-full ${currentSize} ${heightClass} flex flex-col glass-dropdown rounded-2xl border border-brand-10/15 shadow-2xl dropdown-unroll select-none font-sans text-brand-10 text-left antialiased overflow-hidden overscroll-contain ${className}`}
+        {...props}
       >
         {/* Modal Header */}
         {(title || showClose) && (
@@ -122,9 +147,7 @@ export function Modal({
 
         {/* Modal Body */}
         <div
-          className={`text-xs text-brand-10/85 font-medium leading-relaxed overflow-y-auto custom-scrollbar flex-1 min-h-0 px-6 ${
-            title || showClose ? 'py-4' : 'pt-6 pb-4'
-          } ${!footer ? 'pb-6' : ''}`}
+          className={`text-xs text-brand-10/85 font-medium leading-relaxed flex flex-col flex-1 min-h-0 ${overflowClasses} ${paddingClasses} ${bodyClassName}`}
         >
           {children}
         </div>

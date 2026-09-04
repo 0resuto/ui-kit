@@ -29,13 +29,18 @@ export declare const Button: React.ForwardRefExoticComponent<
 
 export type ModalSize = 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | 'full';
 
-export interface ModalProps {
+export interface ModalProps extends React.HTMLAttributes<HTMLDivElement> {
   isOpen: boolean;
   onClose: () => void;
   title?: React.ReactNode;
   description?: React.ReactNode;
   icon?: React.ElementType;
   size?: ModalSize;
+  fixedHeight?: boolean;
+  fill?: boolean;
+  scrollable?: boolean;
+  noPadding?: boolean;
+  bodyClassName?: string;
   showClose?: boolean;
   closeOnBackdropClick?: boolean;
   closeOnEscape?: boolean;
