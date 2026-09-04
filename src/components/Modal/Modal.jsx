@@ -10,7 +10,7 @@ import { X } from 'lucide-react';
  * @param {React.ReactNode} [title]
  * @param {React.ReactNode} [description]
  * @param {React.ElementType} [icon]
- * @param {'sm' | 'md' | 'lg' | 'xl' | 'full'} [size='md']
+ * @param {'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | 'full'} [size='md']
  * @param {boolean} [showClose=true]
  * @param {boolean} [closeOnBackdropClick=true]
  * @param {boolean} [closeOnEscape=true]
@@ -63,7 +63,9 @@ export function Modal({
     md: 'max-w-md',
     lg: 'max-w-lg',
     xl: 'max-w-2xl',
-    full: 'max-w-4xl',
+    '2xl': 'max-w-4xl',
+    '3xl': 'max-w-6xl',
+    full: 'max-w-7xl',
   };
 
   const currentSize = sizeClasses[size] || sizeClasses.md;

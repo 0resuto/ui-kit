@@ -27,7 +27,7 @@ export declare const Button: React.ForwardRefExoticComponent<
 // Overlays & Feedback Components
 // ============================================================================
 
-export type ModalSize = 'sm' | 'md' | 'lg' | 'xl' | 'full';
+export type ModalSize = 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | 'full';
 
 export interface ModalProps {
   isOpen: boolean;
