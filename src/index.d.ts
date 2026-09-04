@@ -27,7 +27,7 @@ export declare const Button: React.ForwardRefExoticComponent<
 // Overlays & Feedback Components
 // ============================================================================
 
-export type ModalSize = 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | 'full';
+export type ModalSize = 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | 'full';
 
 export interface ModalProps {
   isOpen: boolean;
@@ -139,10 +139,13 @@ export interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElem
   className?: string;
 }
 
-export declare function Input(props: InputProps): React.ReactElement | null;
+export declare const Input: React.ForwardRefExoticComponent<
+  InputProps & React.RefAttributes<HTMLInputElement>
+>;
 
 export interface NumberStepperProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'onChange' | 'value'> {
   value?: number | string;
+  defaultValue?: number | string;
   onChange?: (value: number | string) => void;
   step?: number;
   min?: number;
@@ -153,7 +156,9 @@ export interface NumberStepperProps extends Omit<React.InputHTMLAttributes<HTMLI
   className?: string;
 }
 
-export declare function NumberStepper(props: NumberStepperProps): React.ReactElement | null;
+export declare const NumberStepper: React.ForwardRefExoticComponent<
+  NumberStepperProps & React.RefAttributes<HTMLInputElement>
+>;
 
 export interface SelectOption<T = any> {
   value: T;
@@ -170,7 +175,9 @@ export interface SelectGroup<T = any> {
 export type SelectOptionItem<T = any> = SelectOption<T> | SelectGroup<T> | string | number;
 
 export interface SelectProps<T = any> {
+  name?: string;
   value?: T;
+  defaultValue?: T;
   onChange?: (value: T) => void;
   options?: Array<SelectOptionItem<T>>;
   placeholder?: string;
@@ -179,11 +186,14 @@ export interface SelectProps<T = any> {
   className?: string;
 }
 
-export declare function Select<T = any>(props: SelectProps<T>): React.ReactElement | null;
+export declare const Select: <T = any>(
+  props: SelectProps<T> & React.RefAttributes<HTMLButtonElement>
+) => React.ReactElement | null;
 
 
 export interface CheckboxProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'checked'> {
   checked?: boolean;
+  defaultChecked?: boolean;
   onChange?: (checked: boolean, event: React.ChangeEvent<HTMLInputElement>) => void;
   label?: React.ReactNode;
   description?: React.ReactNode;
@@ -191,7 +201,9 @@ export interface CheckboxProps extends Omit<React.InputHTMLAttributes<HTMLInputE
   className?: string;
 }
 
-export declare function Checkbox(props: CheckboxProps): React.ReactElement | null;
+export declare const Checkbox: React.ForwardRefExoticComponent<
+  CheckboxProps & React.RefAttributes<HTMLInputElement>
+>;
 
 // ============================================================================
 // Progress & Data Visualization
@@ -214,8 +226,9 @@ export interface ProgressBarProps {
 
 export declare function ProgressBar(props: ProgressBarProps): React.ReactElement | null;
 
-export interface SliderProps {
+export interface SliderProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'value' | 'size'> {
   value?: number;
+  defaultValue?: number;
   onChange?: (value: number) => void;
   min?: number;
   max?: number;
@@ -226,7 +239,9 @@ export interface SliderProps {
   className?: string;
 }
 
-export declare function Slider(props: SliderProps): React.ReactElement | null;
+export declare const Slider: React.ForwardRefExoticComponent<
+  SliderProps & React.RefAttributes<HTMLInputElement>
+>;
 
 // ============================================================================
 // Switches & Navigation

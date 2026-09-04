@@ -4,8 +4,9 @@ import React from 'react';
  * Universal Cold Mirror Range Slider
  * Supports gradient filled track (fill=true) and neutral track (fill=false for center/bipolar adjust).
  */
-export function Slider({
-  value = 0,
+export const Slider = React.forwardRef(function Slider({
+  value,
+  defaultValue,
   onChange,
   min = 0,
   max = 100,
@@ -14,8 +15,15 @@ export function Slider({
   fillColor = '#e63946',
   disabled = false,
   className = '',
-}) {
-  const percentage = Math.min(100, Math.max(0, ((value - min) / (max - min)) * 100));
+  name,
+  ...props
+}, ref) {
+  const isControlled = value !== undefined;
+  const [uncontrolledVal, setUncontrolledVal] = React.useState(defaultValue !== undefined ? defaultValue : min);
+  const currentVal = isControlled ? value : uncontrolledVal;
+
+  const range = max - min;
+  const percentage = range <= 0 ? 0 : Math.min(100, Math.max(0, ((currentVal - min) / range) * 100));
 
   const trackStyle = fill && !disabled
     ? {
@@ -27,6 +35,9 @@ export function Slider({
 
   const handleChange = (e) => {
     const val = parseFloat(e.target.value);
+    if (!isControlled) {
+      setUncontrolledVal(val);
+    }
     if (onChange) {
       onChange(val);
     }
@@ -34,17 +45,22 @@ export function Slider({
 
   return (
     <input
+      ref={ref}
       type="range"
+      name={name}
       min={min}
       max={max}
       step={step}
-      value={value}
+      value={currentVal}
       onChange={handleChange}
       disabled={disabled}
       style={trackStyle}
       className={`w-full h-2 rounded-full appearance-none cursor-pointer accent-brand-30 disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
+      {...props}
     />
   );
-}
+});
+
+Slider.displayName = 'Slider';
 
 export default Slider;

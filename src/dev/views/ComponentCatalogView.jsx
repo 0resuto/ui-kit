@@ -12,7 +12,8 @@ import {
   Cpu,
   HardDrive,
   Wifi,
-  Activity
+  Activity,
+  Search
 } from 'lucide-react';
 import { 
   Card,
@@ -547,7 +548,7 @@ export function ComponentCatalogView({
             icon={Cpu}
             actions={
               <div className="flex items-center gap-2">
-                <Input placeholder="Filter..." size="sm" className="w-32" />
+                <Input placeholder="Filter..." size="sm" className="w-32" icon={Search} />
                 <Button size="sm" variant="primary" leftIcon={<Plus className="w-3 h-3" />}>
                   Add Node
                 </Button>

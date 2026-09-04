@@ -55,14 +55,19 @@ export function ToastItem({ toast, onDismiss }) {
         <div className="flex items-start gap-2.5 min-w-0">
           <div className="relative mt-0.5 shrink-0">
             <Icon className={`w-4 h-4 ${currentConfig.colorClass}`} />
-            <span
-              className={`absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full ${currentConfig.beaconClass} animate-ping`}
-            />
+            <span className="absolute -top-0.5 -right-0.5 flex h-1.5 w-1.5">
+              <span
+                className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${currentConfig.beaconClass}`}
+              />
+              <span
+                className={`relative inline-flex rounded-full h-1.5 w-1.5 ${currentConfig.beaconClass}`}
+              />
+            </span>
           </div>
 
           <div className="space-y-0.5 min-w-0">
             {toast.title && (
-              <h4 className="text-xs font-bold text-brand-10 truncate leading-tight">
+              <h4 className="text-xs font-bold text-brand-10 leading-tight break-words">
                 {toast.title}
               </h4>
             )}

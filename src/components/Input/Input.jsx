@@ -45,28 +45,55 @@ const sizeMap = {
  * Features standardized 32px height rhythm (sm: 28px, md: 32px, lg: 38px),
  * glass-control acrylic token, optional icon, and clear trigger.
  */
-export function Input({
-  value = '',
+export const Input = React.forwardRef(function Input({
+  value,
+  defaultValue,
   onChange,
   onClear,
   placeholder = '',
-  icon: Icon = Search,
+  icon: Icon = null,
   showClear = true,
   size = 'md',
   type = 'text',
   disabled = false,
   className = '',
   ...props
-}) {
+}, ref) {
   const sz = sizeMap[size] || sizeMap.md;
+  const innerRef = React.useRef(null);
+  React.useImperativeHandle(ref, () => innerRef.current);
+
+  const isControlled = value !== undefined;
+  const [uncontrolledVal, setUncontrolledVal] = React.useState(defaultValue || '');
+  const hasValue = Boolean(isControlled ? value : uncontrolledVal);
+
+  const handleChange = (e) => {
+    if (!isControlled) {
+      setUncontrolledVal(e.target.value);
+    }
+    if (onChange) {
+      onChange(e);
+    }
+  };
 
   const handleClear = () => {
+    if (innerRef.current) {
+      innerRef.current.value = '';
+      innerRef.current.focus();
+    }
+    if (!isControlled) {
+      setUncontrolledVal('');
+    }
     if (onClear) {
       onClear();
     } else if (onChange) {
       onChange({ target: { value: '' } });
     }
   };
+
+  const valueProps = isControlled 
+    ? { value } 
+    : (defaultValue !== undefined ? { defaultValue } : {});
 
   return (
     <div className={`relative flex items-center w-full ${sz.container} ${className}`}>
@@ -75,18 +102,19 @@ export function Input({
       )}
       
       <input
+        ref={innerRef}
         type={type}
-        value={value}
-        onChange={onChange}
+        onChange={handleChange}
         placeholder={placeholder}
         disabled={disabled}
         className={`w-full h-full glass-control border border-brand-10/15 focus:border-brand-30 hover:border-brand-10/30 text-brand-10 outline-none transition-all font-medium placeholder:text-brand-10/40 disabled:opacity-50 disabled:cursor-not-allowed ${sz.input} ${
           Icon ? sz.plIcon : sz.plNoIcon
-        } ${showClear && value ? sz.prClear : sz.prNoClear}`}
+        } ${showClear && hasValue ? sz.prClear : sz.prNoClear}`}
+        {...valueProps}
         {...props}
       />
 
-      {showClear && value && (
+      {showClear && hasValue && (
         <button
           type="button"
           onClick={handleClear}
@@ -98,6 +126,8 @@ export function Input({
       )}
     </div>
   );
-}
+});
+
+Input.displayName = 'Input';
 
 export default Input;

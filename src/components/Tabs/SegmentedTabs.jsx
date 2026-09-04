@@ -9,10 +9,13 @@ export function SegmentedTabs({
   activeTab,
   onChange,
   className = '',
+  ...props
 }) {
   return (
     <div
+      role="tablist"
       className={`flex bg-brand-60/60 border border-brand-60 rounded-xl p-1 gap-1 w-full shadow-inner backdrop-blur-md ${className}`}
+      {...props}
     >
       {tabs.map((tab) => {
         const isActive = tab.id === activeTab;
@@ -22,6 +25,8 @@ export function SegmentedTabs({
           <button
             key={tab.id}
             type="button"
+            role="tab"
+            aria-selected={isActive}
             onClick={() => onChange && onChange(tab.id)}
             className={`flex-1 py-1.5 px-3 rounded-lg text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
               isActive

@@ -25,13 +25,22 @@ const stepperSizeMap = {
   },
 };
 
+function getStepPrecision(stepVal) {
+  const stepStr = String(stepVal);
+  if (stepStr.includes('.')) {
+    return stepStr.split('.')[1].length;
+  }
+  return 0;
+}
+
 /**
  * Standard Number Stepper Component
  * Features standardized 32px height rhythm (sm: 28px, md: 32px, lg: 38px),
  * glass-control acrylic token, tabular numbers, and custom +/- triggers.
  */
-export function NumberStepper({
-  value = 0,
+export const NumberStepper = React.forwardRef(function NumberStepper({
+  value,
+  defaultValue = 0,
   onChange,
   step = 1,
   min = -Infinity,
@@ -40,14 +49,25 @@ export function NumberStepper({
   size = 'md',
   disabled = false,
   className = '',
+  name,
   ...props
-}) {
+}, ref) {
   const sz = stepperSizeMap[size] || stepperSizeMap.md;
+
+  const isControlled = value !== undefined;
+  const [uncontrolledValue, setUncontrolledValue] = React.useState(defaultValue);
+  const currentValue = isControlled ? value : uncontrolledValue;
 
   const handleStep = (delta) => {
     if (disabled) return;
-    const currentVal = typeof value === 'number' ? value : parseFloat(value) || 0;
-    const nextVal = Math.min(max, Math.max(min, currentVal + delta));
+    const currentVal = typeof currentValue === 'number' ? currentValue : parseFloat(currentValue) || 0;
+    const precision = Math.max(getStepPrecision(step), getStepPrecision(currentVal));
+    const rawNext = Math.min(max, Math.max(min, currentVal + delta));
+    const nextVal = precision > 0 ? Number(rawNext.toFixed(precision)) : Math.round(rawNext);
+
+    if (!isControlled) {
+      setUncontrolledValue(nextVal);
+    }
     if (onChange) {
       onChange(nextVal);
     }
@@ -56,14 +76,19 @@ export function NumberStepper({
   const handleManualChange = (e) => {
     const raw = e.target.value;
     if (raw === '') {
+      if (!isControlled) setUncontrolledValue('');
       if (onChange) onChange('');
       return;
     }
     const num = parseFloat(raw);
-    if (!isNaN(num) && onChange) {
-      onChange(num);
+    if (!isNaN(num)) {
+      if (!isControlled) setUncontrolledValue(num);
+      if (onChange) onChange(num);
     }
   };
+
+  const isAtMin = typeof currentValue === 'number' && currentValue <= min;
+  const isAtMax = typeof currentValue === 'number' && currentValue >= max;
 
   return (
     <div
@@ -74,7 +99,7 @@ export function NumberStepper({
       <button
         type="button"
         onClick={() => handleStep(-step)}
-        disabled={disabled || value <= min}
+        disabled={disabled || isAtMin}
         className={`${sz.btn} h-full flex items-center justify-center text-brand-10/60 hover:text-brand-10 hover:bg-white/10 active:scale-95 disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer border-r border-brand-10/10`}
       >
         <Minus className={sz.iconSize} />
@@ -82,8 +107,10 @@ export function NumberStepper({
 
       <div className="flex-1 flex items-center justify-center px-1.5 min-w-0">
         <input
+          ref={ref}
           type="number"
-          value={value}
+          name={name}
+          value={currentValue}
           onChange={handleManualChange}
           disabled={disabled}
           step={step}
@@ -102,13 +129,15 @@ export function NumberStepper({
       <button
         type="button"
         onClick={() => handleStep(step)}
-        disabled={disabled || value >= max}
+        disabled={disabled || isAtMax}
         className={`${sz.btn} h-full flex items-center justify-center text-brand-10/60 hover:text-brand-10 hover:bg-white/10 active:scale-95 disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer border-l border-brand-10/10`}
       >
         <Plus className={sz.iconSize} />
       </button>
     </div>
   );
-}
+});
+
+NumberStepper.displayName = 'NumberStepper';
 
 export default NumberStepper;

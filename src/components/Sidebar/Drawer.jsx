@@ -52,6 +52,9 @@ export function Drawer({
       {/* Drawer Panel: Anchored at left-0 on mobile, left-14 on desktop, sliding out from under Rail */}
       <div
         ref={drawerRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label={typeof title === 'string' ? title : 'Drawer'}
         className={`fixed top-0 bottom-0 left-0 sm:left-14 w-full sm:w-[320px] max-w-full sm:max-w-[calc(100vw-3.5rem)] z-60 sm:z-40 bg-brand-bg/98 backdrop-blur-2xl border-r border-brand-60 flex flex-col font-sans transition-transform duration-300 ease-in-out will-change-transform text-brand-10 h-dvh ${
           isOpen 
             ? 'translate-x-0 pointer-events-auto shadow-[12px_0_28px_-6px_rgba(0,0,0,0.32),4px_0_10px_-2px_rgba(0,0,0,0.22)]' 

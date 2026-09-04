@@ -41,6 +41,7 @@ export function Badge({
   beacon = false,
   children,
   className = '',
+  ...props
 }) {
   const palette = COLOR_STYLES[color] || COLOR_STYLES.brand;
 
@@ -51,9 +52,13 @@ export function Badge({
   return (
     <span
       className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold border transition-colors ${styleClass} ${className}`}
+      {...props}
     >
       {beacon && active && (
-        <span className={`w-1.5 h-1.5 rounded-full ${palette.beacon} animate-ping`} />
+        <span className="relative flex h-1.5 w-1.5 shrink-0">
+          <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${palette.beacon}`} />
+          <span className={`relative inline-flex rounded-full h-1.5 w-1.5 ${palette.beacon}`} />
+        </span>
       )}
       {children}
     </span>

@@ -78,15 +78,18 @@ function findOptionByValue(optionsList, val) {
  * @param {boolean} [props.disabled=false]
  * @param {string} [props.className='']
  */
-export function Select({
+export const Select = React.forwardRef(function Select({
+  name,
   value,
+  defaultValue,
   onChange,
   options = [],
   placeholder = 'Select option...',
   size = 'md',
   disabled = false,
   className = '',
-}) {
+  ...props
+}, ref) {
   const [isOpen, setIsOpen] = useState(false);
   const [placement, setPlacement] = useState('bottom');
   const [maxHeight, setMaxHeight] = useState(240);
@@ -94,8 +97,14 @@ export function Select({
   const triggerRef = useRef(null);
   const menuRef = useRef(null);
 
+  React.useImperativeHandle(ref, () => triggerRef.current);
+
+  const isControlled = value !== undefined;
+  const [uncontrolledValue, setUncontrolledValue] = useState(defaultValue);
+  const currentValue = isControlled ? value : uncontrolledValue;
+
   const sz = selectSizeMap[size] || selectSizeMap.md;
-  const selectedOption = findOptionByValue(options, value);
+  const selectedOption = findOptionByValue(options, currentValue);
 
   // Recalculate screen position and viewport collision to attach seamlessly
   const updatePosition = () => {
@@ -161,6 +170,9 @@ export function Select({
   }, [isOpen]);
 
   const handleSelect = (val) => {
+    if (!isControlled) {
+      setUncontrolledValue(val);
+    }
     if (onChange) {
       onChange(val);
     }
@@ -168,7 +180,10 @@ export function Select({
   };
 
   return (
-    <div className={`relative w-full select-none ${className}`}>
+    <div className={`relative w-full select-none ${className}`} {...props}>
+      {name && (
+        <input type="hidden" name={name} value={currentValue ?? ''} />
+      )}
       {/* Trigger Button */}
       <button
         ref={triggerRef}
@@ -234,7 +249,7 @@ export function Select({
                       const item = typeof opt === 'string' || typeof opt === 'number'
                         ? { value: opt, label: String(opt) }
                         : opt;
-                      const isSelected = item.value === value;
+                      const isSelected = item.value === currentValue;
 
                       return (
                         <div
@@ -260,7 +275,7 @@ export function Select({
             const item = typeof entry === 'string' || typeof entry === 'number'
               ? { value: entry, label: String(entry) }
               : entry;
-            const isSelected = item.value === value;
+            const isSelected = item.value === currentValue;
 
             return (
               <div
@@ -282,7 +297,9 @@ export function Select({
       )}
     </div>
   );
-}
+});
+
+Select.displayName = 'Select';
 
 export default Select;
 

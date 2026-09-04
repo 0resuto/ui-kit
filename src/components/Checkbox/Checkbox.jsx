@@ -5,24 +5,33 @@ import { Check } from 'lucide-react';
  * Standard Branded Checkbox Component
  * Custom frosted container, brand red fill on active, subtle glow, and full accessibility.
  */
-export function Checkbox({
-  checked = false,
+export const Checkbox = React.forwardRef(function Checkbox({
+  checked,
+  defaultChecked,
   onChange,
   label,
   description,
   disabled = false,
   className = '',
   ...props
-}) {
+}, ref) {
+  const isControlled = checked !== undefined;
+  const [uncontrolledChecked, setUncontrolledChecked] = React.useState(Boolean(defaultChecked));
+  const isChecked = isControlled ? Boolean(checked) : uncontrolledChecked;
+
   const handleChange = (e) => {
     if (disabled) return;
+    if (!isControlled) {
+      setUncontrolledChecked(e.target.checked);
+    }
     if (onChange) {
-      // Support both event-based and direct boolean handler
-      if (typeof onChange === 'function') {
-        onChange(e.target.checked, e);
-      }
+      onChange(e.target.checked, e);
     }
   };
+
+  const checkedProps = isControlled
+    ? { checked: isChecked }
+    : (defaultChecked !== undefined ? { defaultChecked } : {});
 
   return (
     <label
@@ -32,21 +41,22 @@ export function Checkbox({
     >
       <div className="relative flex items-center justify-center flex-none mt-0.5">
         <input
+          ref={ref}
           type="checkbox"
-          checked={checked}
           onChange={handleChange}
           disabled={disabled}
           className="sr-only"
+          {...checkedProps}
           {...props}
         />
         <div
           className={`w-4 h-4 rounded-md border flex items-center justify-center transition-all duration-150 ${
-            checked
+            isChecked
               ? 'bg-brand-30 border-brand-30 shadow-[0_0_8px_rgba(230,57,70,0.45)]'
               : 'bg-brand-60/80 border-brand-60/90 group-hover:border-brand-30/60'
           }`}
         >
-          {checked && (
+          {isChecked && (
             <Check className="w-2.5 h-2.5 text-white stroke-[3.5]" />
           )}
         </div>
@@ -68,6 +78,8 @@ export function Checkbox({
       )}
     </label>
   );
-}
+});
+
+Checkbox.displayName = 'Checkbox';
 
 export default Checkbox;

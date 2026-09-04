@@ -7,7 +7,8 @@ import {
   ExternalLink,
   Server,
   Database,
-  Radio
+  Radio,
+  Search
 } from 'lucide-react';
 import { 
   Card,
@@ -51,6 +52,7 @@ export function DashboardView({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search cluster, service, endpoint..."
+            icon={Search}
           />
 
           <Select

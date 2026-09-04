@@ -37,8 +37,9 @@ export function ProgressBar({
   pulse = false,
   orientation = 'horizontal',
   className = '',
+  ...props
 }) {
-  const percentage = Math.min(100, Math.max(0, (value / max) * 100));
+  const percentage = max <= 0 ? 0 : Math.min(100, Math.max(0, (value / max) * 100));
   const heightPx = typeof size === 'number' ? `${size}px` : SIZE_MAP[size] || '10px';
 
   // Resolved background color class and glow RGBA
@@ -50,11 +51,20 @@ export function ProgressBar({
     boxShadow: glow ? `0 0 16px ${glowRgba}` : 'none',
   };
 
+  const ariaAttributes = {
+    role: 'progressbar',
+    'aria-valuenow': value,
+    'aria-valuemin': 0,
+    'aria-valuemax': max,
+  };
+
   if (orientation === 'vertical') {
     return (
       <div
+        {...ariaAttributes}
         className={`bg-brand-60/80 rounded-lg overflow-hidden border border-white/5 p-0 flex flex-col justify-end ${className}`}
         style={{ width: heightPx, height: '100%' }}
+        {...props}
       >
         <div
           className={`w-full rounded transition-all duration-100 ${bgClass} ${
@@ -68,8 +78,10 @@ export function ProgressBar({
 
   return (
     <div
+      {...ariaAttributes}
       className={`w-full bg-brand-60/80 rounded-full overflow-hidden border border-white/5 p-0 ${className}`}
       style={{ height: heightPx }}
+      {...props}
     >
       <div
         className={`h-full rounded-full transition-all duration-100 ${bgClass} ${

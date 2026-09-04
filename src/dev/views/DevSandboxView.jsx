@@ -17,7 +17,8 @@ import {
   Table as TableIcon,
   LayoutTemplate,
   Columns3,
-  Maximize2
+  Maximize2,
+  Search
 } from 'lucide-react';
 
 import { 
@@ -155,7 +156,7 @@ export function DevSandboxView({
           </div>
 
           <div className="flex items-center gap-1.5 shrink-0">
-            <Input placeholder="Filter..." size={preset.controlSize} className="w-28 sm:w-36" />
+            <Input placeholder="Filter..." size={preset.controlSize} className="w-28 sm:w-36" icon={Search} />
             <Button size={preset.controlSize} variant="glass">Export</Button>
             <Button size={preset.controlSize} variant="primary" leftIcon={<Plus className="w-3 h-3" />}>
               Add
@@ -165,7 +166,7 @@ export function DevSandboxView({
 
         {/* Form Controls Grid */}
         <div className={`grid grid-cols-1 sm:grid-cols-3 ${preset.controlGap}`}>
-          <Input placeholder="Search endpoint..." size={preset.controlSize} />
+          <Input placeholder="Search endpoint..." size={preset.controlSize} icon={Search} />
           <Select 
             value={selectedService} 
             onChange={setSelectedService} 
