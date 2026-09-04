@@ -7,28 +7,40 @@ const selectSizeMap = {
     trigger: 'h-7 text-[11px] px-2.5',
     roundedClosed: 'rounded-lg',
     roundedOpen: 'rounded-t-lg',
+    roundedOpenBottom: 'rounded-t-lg',
+    roundedOpenTop: 'rounded-b-lg',
     iconSize: 'w-3 h-3',
     item: 'px-2.5 py-1.5 text-[11px] rounded-md',
     groupHeader: 'px-2.5 pt-1.5 pb-0.5 text-[9px]',
     menu: 'rounded-b-lg p-1',
+    menuBottom: 'rounded-b-lg p-1',
+    menuTop: 'rounded-t-lg p-1',
   },
   md: {
     trigger: 'h-8 text-xs px-3',
     roundedClosed: 'rounded-xl',
     roundedOpen: 'rounded-t-xl',
+    roundedOpenBottom: 'rounded-t-xl',
+    roundedOpenTop: 'rounded-b-xl',
     iconSize: 'w-3.5 h-3.5',
     item: 'px-3 py-1.5 text-xs rounded-lg',
     groupHeader: 'px-3 pt-2 pb-0.5 text-[10px]',
     menu: 'rounded-b-xl p-1.5',
+    menuBottom: 'rounded-b-xl p-1.5',
+    menuTop: 'rounded-t-xl p-1.5',
   },
   lg: {
     trigger: 'h-[38px] text-sm px-3.5',
     roundedClosed: 'rounded-xl',
     roundedOpen: 'rounded-t-xl',
+    roundedOpenBottom: 'rounded-t-xl',
+    roundedOpenTop: 'rounded-b-xl',
     iconSize: 'w-4 h-4',
     item: 'px-3.5 py-2 text-sm rounded-lg',
     groupHeader: 'px-3.5 pt-2.5 pb-1 text-[11px]',
     menu: 'rounded-b-xl p-1.5',
+    menuBottom: 'rounded-b-xl p-1.5',
+    menuTop: 'rounded-t-xl p-1.5',
   },
 };
 
@@ -76,19 +88,35 @@ export function Select({
   className = '',
 }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [coords, setCoords] = useState({ top: 0, left: 0, width: 0 });
+  const [placement, setPlacement] = useState('bottom');
+  const [maxHeight, setMaxHeight] = useState(240);
+  const [coords, setCoords] = useState({ top: 0, bottom: 0, left: 0, width: 0 });
   const triggerRef = useRef(null);
   const menuRef = useRef(null);
 
   const sz = selectSizeMap[size] || selectSizeMap.md;
   const selectedOption = findOptionByValue(options, value);
 
-  // Recalculate screen position to attach seamlessly in viewport coordinates
+  // Recalculate screen position and viewport collision to attach seamlessly
   const updatePosition = () => {
-    if (triggerRef.current) {
+    if (triggerRef.current && typeof window !== 'undefined') {
       const rect = triggerRef.current.getBoundingClientRect();
+      const viewportHeight = window.innerHeight;
+      const spaceBelow = viewportHeight - rect.bottom;
+      const spaceAbove = rect.top;
+      const defaultMenuHeight = 240;
+
+      // Flip upward if bottom space is constricted and top space provides better headroom
+      const shouldFlipTop = spaceBelow < defaultMenuHeight && spaceAbove > spaceBelow;
+      const availableSpace = shouldFlipTop ? spaceAbove - 12 : spaceBelow - 12;
+      const clampedMaxHeight = Math.max(120, Math.min(defaultMenuHeight, Math.floor(availableSpace)));
+
+      setPlacement(shouldFlipTop ? 'top' : 'bottom');
+      setMaxHeight(clampedMaxHeight);
+
       setCoords({
-        top: rect.bottom - 1, // Flush attached in-place (viewport fixed coordinates)
+        top: rect.bottom - 1,
+        bottom: viewportHeight - rect.top - 1,
         left: rect.left,
         width: rect.width,
       });
@@ -149,7 +177,9 @@ export function Select({
         onClick={toggleOpen}
         className={`w-full text-brand-10 flex items-center justify-between outline-none transition-all cursor-pointer font-medium ${sz.trigger} ${
           isOpen
-            ? `bg-brand-bg/95 border border-brand-30 border-b-transparent shadow-[0_0_8px_rgba(230,57,70,0.15)] ${sz.roundedOpen}`
+            ? placement === 'top'
+              ? `bg-brand-bg/95 border border-brand-30 border-t-transparent shadow-[0_0_8px_rgba(230,57,70,0.15)] ${sz.roundedOpenTop}`
+              : `bg-brand-bg/95 border border-brand-30 border-b-transparent shadow-[0_0_8px_rgba(230,57,70,0.15)] ${sz.roundedOpenBottom}`
             : `glass-control hover:border-brand-10/30 ${sz.roundedClosed}`
         } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
       >
@@ -169,12 +199,17 @@ export function Select({
           ref={menuRef}
           style={{
             position: 'fixed',
-            top: `${coords.top}px`,
+            ...(placement === 'top' ? { bottom: `${coords.bottom}px` } : { top: `${coords.top}px` }),
             left: `${coords.left}px`,
             width: `${coords.width}px`,
+            maxHeight: `${maxHeight}px`,
             zIndex: 99999,
           }}
-          className={`glass-dropdown border-x border-b border-brand-30 border-t-0 space-y-0.5 dropdown-unroll max-h-60 overflow-y-auto custom-scrollbar font-sans text-brand-10 text-left box-border antialiased ${sz.menu}`}
+          className={`glass-dropdown border-x border-brand-30 ${
+            placement === 'top'
+              ? `border-t border-b-0 ${sz.menuTop}`
+              : `border-b border-t-0 ${sz.menuBottom}`
+          } space-y-0.5 dropdown-unroll overflow-y-auto custom-scrollbar font-sans text-brand-10 text-left box-border antialiased`}
         >
 
           {options.map((entry, idx) => {

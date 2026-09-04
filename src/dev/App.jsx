@@ -95,7 +95,7 @@ function DashboardApp() {
   ];
 
   return (
-    <div className="min-h-screen bg-brand-bg text-brand-10 font-exo font-light select-none relative overflow-x-hidden">
+    <div className="min-h-dvh bg-brand-bg text-brand-10 font-exo font-light select-none relative overflow-x-hidden">
       {/* Background Image Wallpaper Layer */}
       {showBackground && (
         <div

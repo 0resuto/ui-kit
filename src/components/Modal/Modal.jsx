@@ -85,12 +85,11 @@ export function Modal({
     >
       {/* Modal Dialog Window */}
       <div
-        className={`w-full ${currentSize} glass-dropdown rounded-2xl border border-brand-10/15 p-6 shadow-2xl space-y-4 dropdown-unroll select-none font-sans text-brand-10 text-left antialiased ${className}`}
+        className={`w-full ${currentSize} max-h-[calc(100dvh-2rem)] sm:max-h-[calc(100dvh-3.5rem)] flex flex-col glass-dropdown rounded-2xl border border-brand-10/15 shadow-2xl dropdown-unroll select-none font-sans text-brand-10 text-left antialiased overflow-hidden ${className}`}
       >
-
         {/* Modal Header */}
         {(title || showClose) && (
-          <div className="flex items-start justify-between gap-4 border-b border-brand-60/60 pb-3.5">
+          <div className="flex items-start justify-between gap-4 border-b border-brand-60/60 px-6 pt-6 pb-3.5 shrink-0">
             <div className="space-y-1">
               {title && (
                 <div className="flex items-center gap-2">
@@ -121,13 +120,17 @@ export function Modal({
         )}
 
         {/* Modal Body */}
-        <div className="text-xs text-brand-10/85 font-medium leading-relaxed">
+        <div
+          className={`text-xs text-brand-10/85 font-medium leading-relaxed overflow-y-auto custom-scrollbar flex-1 min-h-0 px-6 ${
+            title || showClose ? 'py-4' : 'pt-6 pb-4'
+          } ${!footer ? 'pb-6' : ''}`}
+        >
           {children}
         </div>
 
         {/* Modal Footer */}
         {footer && (
-          <div className="border-t border-brand-60/60 pt-4 flex items-center justify-end gap-2.5">
+          <div className="border-t border-brand-60/60 px-6 py-4 flex items-center justify-end gap-2.5 shrink-0">
             {footer}
           </div>
         )}

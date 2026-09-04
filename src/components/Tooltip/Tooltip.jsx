@@ -65,7 +65,7 @@ export function Tooltip({
       {isVisible && (
         <div
           role="tooltip"
-          className={`absolute ${currentPos} z-[9999] pointer-events-none px-2.5 py-1 text-[11px] font-semibold text-brand-10 bg-brand-bg/95 border border-brand-10/15 rounded-lg shadow-xl shadow-black/60 backdrop-blur-md whitespace-nowrap dropdown-unroll ${className}`}
+          className={`absolute ${currentPos} z-[9999] pointer-events-none px-2.5 py-1 text-[11px] font-semibold text-brand-10 bg-brand-bg/95 border border-brand-10/15 rounded-lg shadow-xl shadow-black/60 backdrop-blur-md max-w-[calc(100vw-2rem)] whitespace-normal break-words dropdown-unroll ${className}`}
         >
           {content}
         </div>

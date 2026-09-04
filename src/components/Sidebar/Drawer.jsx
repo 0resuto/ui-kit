@@ -27,20 +27,32 @@ export function Drawer({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, onClose]);
 
+  // Lock body scroll on mobile when open
+  useEffect(() => {
+    if (!isOpen) return;
+    const originalOverflow = document.body.style.overflow;
+    if (typeof window !== 'undefined' && window.innerWidth < 640) {
+      document.body.style.overflow = 'hidden';
+    }
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, [isOpen]);
+
   return (
     <>
-      {/* Backdrop (z-35 below Drawer z-40 and Rail z-50) */}
+      {/* Backdrop (mobile z-55, desktop z-35 below Drawer z-40 and Rail z-50) */}
       {isOpen && (
         <div
           onClick={onClose}
-          className="fixed inset-0 z-35 bg-black/40 backdrop-blur-[2px] transition-opacity"
+          className="fixed inset-0 z-55 sm:z-35 bg-black/50 backdrop-blur-[2px] transition-opacity"
         />
       )}
 
-      {/* Drawer Panel: Anchored at left-14, sliding out from under Rail */}
+      {/* Drawer Panel: Anchored at left-0 on mobile, left-14 on desktop, sliding out from under Rail */}
       <div
         ref={drawerRef}
-        className={`fixed top-0 bottom-0 left-14 w-[320px] max-w-[calc(100vw-3.5rem)] z-40 bg-brand-bg/98 backdrop-blur-2xl border-r border-brand-60 flex flex-col font-sans transition-transform duration-300 ease-in-out will-change-transform text-brand-10 ${
+        className={`fixed top-0 bottom-0 left-0 sm:left-14 w-full sm:w-[320px] max-w-full sm:max-w-[calc(100vw-3.5rem)] z-60 sm:z-40 bg-brand-bg/98 backdrop-blur-2xl border-r border-brand-60 flex flex-col font-sans transition-transform duration-300 ease-in-out will-change-transform text-brand-10 h-dvh ${
           isOpen 
             ? 'translate-x-0 pointer-events-auto shadow-[12px_0_28px_-6px_rgba(0,0,0,0.32),4px_0_10px_-2px_rgba(0,0,0,0.22)]' 
             : '-translate-x-full pointer-events-none shadow-none'

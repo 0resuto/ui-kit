@@ -111,10 +111,10 @@ export function ToastContainer({ toasts = [], onDismiss, position = 'bottom-righ
   }
 
   const positionClasses = {
-    'top-right': 'top-5 right-5',
-    'top-left': 'top-5 left-5',
-    'bottom-right': 'bottom-5 right-5',
-    'bottom-left': 'bottom-5 left-5',
+    'top-right': 'top-4 right-4 sm:top-5 sm:right-5',
+    'top-left': 'top-4 left-4 sm:top-5 sm:left-5',
+    'bottom-right': 'bottom-4 right-4 sm:bottom-5 sm:right-5',
+    'bottom-left': 'bottom-4 left-4 sm:bottom-5 sm:left-5',
   };
 
   const pos = positionClasses[position] || positionClasses['bottom-right'];
@@ -122,7 +122,7 @@ export function ToastContainer({ toasts = [], onDismiss, position = 'bottom-righ
   return createPortal(
     <div
       aria-live="polite"
-      className={`fixed ${pos} z-[99999] flex flex-col gap-2 max-w-sm w-full pointer-events-none`}
+      className={`fixed ${pos} z-[99999] flex flex-col gap-2 w-[calc(100vw-2rem)] max-w-sm pointer-events-none`}
     >
       {toasts.map((t) => (
         <ToastItem key={t.id} toast={t} onDismiss={onDismiss} />
