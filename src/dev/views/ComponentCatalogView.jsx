@@ -318,7 +318,7 @@ export function ComponentCatalogView({
 
           <div className="space-y-1">
             <label className="text-xs font-semibold text-brand-10/80">NumberStepper with Custom +/-:</label>
-            <NumberStepper value={42} step={1} min={0} max={100} unit="units" />
+            <NumberStepper defaultValue={42} step={1} min={0} max={100} unit="units" />
           </div>
 
           <div className="space-y-1">

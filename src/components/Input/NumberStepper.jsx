@@ -50,6 +50,9 @@ export const NumberStepper = React.forwardRef(function NumberStepper({
   disabled = false,
   className = '',
   name,
+  onBlur,
+  onFocus,
+  onKeyDown,
   ...props
 }, ref) {
   const sz = stepperSizeMap[size] || stepperSizeMap.md;
@@ -58,13 +61,31 @@ export const NumberStepper = React.forwardRef(function NumberStepper({
   const [uncontrolledValue, setUncontrolledValue] = React.useState(defaultValue);
   const currentValue = isControlled ? value : uncontrolledValue;
 
+  const [inputString, setInputString] = React.useState(
+    currentValue !== undefined && currentValue !== null ? String(currentValue) : ''
+  );
+  const [isFocused, setIsFocused] = React.useState(false);
+
+  React.useEffect(() => {
+    if (!isFocused) {
+      setInputString(currentValue !== undefined && currentValue !== null ? String(currentValue) : '');
+    }
+  }, [currentValue, isFocused]);
+
+  const clampValue = (val) => {
+    const num = typeof val === 'number' ? val : parseFloat(val);
+    if (isNaN(num)) return typeof defaultValue === 'number' ? defaultValue : 0;
+    return Math.min(max, Math.max(min, num));
+  };
+
   const handleStep = (delta) => {
     if (disabled) return;
-    const currentVal = typeof currentValue === 'number' ? currentValue : parseFloat(currentValue) || 0;
-    const precision = Math.max(getStepPrecision(step), getStepPrecision(currentVal));
-    const rawNext = Math.min(max, Math.max(min, currentVal + delta));
+    const currentNum = typeof currentValue === 'number' ? currentValue : parseFloat(currentValue) || 0;
+    const precision = Math.max(getStepPrecision(step), getStepPrecision(currentNum));
+    const rawNext = clampValue(currentNum + delta);
     const nextVal = precision > 0 ? Number(rawNext.toFixed(precision)) : Math.round(rawNext);
 
+    setInputString(String(nextVal));
     if (!isControlled) {
       setUncontrolledValue(nextVal);
     }
@@ -75,11 +96,14 @@ export const NumberStepper = React.forwardRef(function NumberStepper({
 
   const handleManualChange = (e) => {
     const raw = e.target.value;
-    if (raw === '') {
+    setInputString(raw);
+
+    if (raw === '' || raw === '-' || raw === '.' || raw === '-.') {
       if (!isControlled) setUncontrolledValue('');
       if (onChange) onChange('');
       return;
     }
+
     const num = parseFloat(raw);
     if (!isNaN(num)) {
       if (!isControlled) setUncontrolledValue(num);
@@ -87,35 +111,85 @@ export const NumberStepper = React.forwardRef(function NumberStepper({
     }
   };
 
-  const isAtMin = typeof currentValue === 'number' && currentValue <= min;
-  const isAtMax = typeof currentValue === 'number' && currentValue >= max;
+  const handleBlur = (e) => {
+    setIsFocused(false);
+    if (inputString === '' || inputString === '-' || inputString === '.' || inputString === '-.') {
+      const fallback = isFinite(min) && min > 0 ? min : 0;
+      const finalVal = clampValue(fallback);
+      setInputString(String(finalVal));
+      if (!isControlled) setUncontrolledValue(finalVal);
+      if (onChange) onChange(finalVal);
+    } else {
+      const parsed = parseFloat(inputString);
+      if (!isNaN(parsed)) {
+        const clamped = clampValue(parsed);
+        const precision = Math.max(getStepPrecision(step), getStepPrecision(parsed));
+        const formatted = precision > 0 ? Number(clamped.toFixed(precision)) : Math.round(clamped);
+        setInputString(String(formatted));
+        if (formatted !== currentValue) {
+          if (!isControlled) setUncontrolledValue(formatted);
+          if (onChange) onChange(formatted);
+        }
+      }
+    }
+    if (onBlur) onBlur(e);
+  };
+
+  const handleFocus = (e) => {
+    setIsFocused(true);
+    if (onFocus) onFocus(e);
+  };
+
+  const handleKeyDown = (e) => {
+    if (disabled) return;
+    if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      handleStep(step);
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      handleStep(-step);
+    } else if (e.key === 'Enter') {
+      handleBlur(e);
+    }
+    if (onKeyDown) onKeyDown(e);
+  };
+
+  const numericCurrent = typeof currentValue === 'number' ? currentValue : parseFloat(currentValue);
+  const isAtMin = !isNaN(numericCurrent) && isFinite(min) && numericCurrent <= min;
+  const isAtMax = !isNaN(numericCurrent) && isFinite(max) && numericCurrent >= max;
 
   return (
     <div
-      className={`flex items-center glass-control border border-brand-10/15 focus-within:border-brand-30 hover:border-brand-10/30 overflow-hidden transition-all ${
+      className={`flex items-center glass-control border border-brand-10/15 focus-within:border-brand-30 focus-within:ring-1 focus-within:ring-brand-30 hover:border-brand-10/30 overflow-hidden transition-all ${
         sz.container
       } ${disabled ? 'opacity-50 cursor-not-allowed' : ''} ${className}`}
     >
       <button
         type="button"
+        aria-label="Decrease value"
         onClick={() => handleStep(-step)}
         disabled={disabled || isAtMin}
-        className={`${sz.btn} h-full flex items-center justify-center text-brand-10/60 hover:text-brand-10 hover:bg-white/10 active:scale-95 disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer border-r border-brand-10/10`}
+        className={`${sz.btn} h-full flex items-center justify-center text-brand-10/60 hover:text-brand-10 hover:bg-white/10 active:scale-95 disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer border-r border-brand-10/10 focus-visible:ring-1 focus-visible:ring-brand-30 focus-visible:outline-none`}
       >
-        <Minus className={sz.iconSize} />
+        <Minus className={sz.iconSize} aria-hidden="true" />
       </button>
 
       <div className="flex-1 flex items-center justify-center px-1.5 min-w-0">
         <input
           ref={ref}
-          type="number"
+          type="text"
+          inputMode="decimal"
           name={name}
-          value={currentValue}
+          value={inputString}
           onChange={handleManualChange}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          onKeyDown={handleKeyDown}
           disabled={disabled}
-          step={step}
-          min={min}
-          max={max}
+          role="spinbutton"
+          aria-valuenow={!isNaN(numericCurrent) ? numericCurrent : undefined}
+          aria-valuemin={isFinite(min) ? min : undefined}
+          aria-valuemax={isFinite(max) ? max : undefined}
           className={`w-full bg-transparent text-brand-10 text-center font-bold outline-none tabular-nums truncate ${sz.input}`}
           {...props}
         />
@@ -128,11 +202,12 @@ export const NumberStepper = React.forwardRef(function NumberStepper({
 
       <button
         type="button"
+        aria-label="Increase value"
         onClick={() => handleStep(step)}
         disabled={disabled || isAtMax}
-        className={`${sz.btn} h-full flex items-center justify-center text-brand-10/60 hover:text-brand-10 hover:bg-white/10 active:scale-95 disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer border-l border-brand-10/10`}
+        className={`${sz.btn} h-full flex items-center justify-center text-brand-10/60 hover:text-brand-10 hover:bg-white/10 active:scale-95 disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer border-l border-brand-10/10 focus-visible:ring-1 focus-visible:ring-brand-30 focus-visible:outline-none`}
       >
-        <Plus className={sz.iconSize} />
+        <Plus className={sz.iconSize} aria-hidden="true" />
       </button>
     </div>
   );
