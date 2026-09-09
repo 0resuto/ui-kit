@@ -57,14 +57,17 @@ export const Input = React.forwardRef(function Input({
   type = 'text',
   disabled = false,
   className = '',
+  inputClassName = '',
   ...props
 }, ref) {
   const sz = sizeMap[size] || sizeMap.md;
   const innerRef = React.useRef(null);
-  React.useImperativeHandle(ref, () => innerRef.current);
+  React.useImperativeHandle(ref, () => innerRef.current, []);
 
   const isControlled = value !== undefined;
-  const [uncontrolledVal, setUncontrolledVal] = React.useState(defaultValue || '');
+  const [uncontrolledVal, setUncontrolledVal] = React.useState(
+    defaultValue !== undefined && defaultValue !== null ? defaultValue : ''
+  );
   const hasValue = Boolean(isControlled ? value : uncontrolledVal);
 
   const handleChange = (e) => {
@@ -77,6 +80,8 @@ export const Input = React.forwardRef(function Input({
   };
 
   const handleClear = () => {
+    if (disabled || props.readOnly) return;
+
     if (innerRef.current) {
       innerRef.current.value = '';
       innerRef.current.focus();
@@ -84,10 +89,26 @@ export const Input = React.forwardRef(function Input({
     if (!isControlled) {
       setUncontrolledVal('');
     }
+    if (onChange) {
+      const syntheticEvent = {
+        target: {
+          ...(innerRef.current || {}),
+          name: props.name || '',
+          value: '',
+        },
+        currentTarget: {
+          ...(innerRef.current || {}),
+          name: props.name || '',
+          value: '',
+        },
+        preventDefault: () => {},
+        stopPropagation: () => {},
+        persist: () => {},
+      };
+      onChange(syntheticEvent);
+    }
     if (onClear) {
       onClear();
-    } else if (onChange) {
-      onChange({ target: { value: '' } });
     }
   };
 
@@ -95,10 +116,12 @@ export const Input = React.forwardRef(function Input({
     ? { value } 
     : (defaultValue !== undefined ? { defaultValue } : {});
 
+  const canClear = showClear && hasValue && !disabled && !props.readOnly;
+
   return (
     <div className={`relative flex items-center w-full ${sz.container} ${className}`}>
       {Icon && (
-        <Icon className={`${sz.iconSize} text-brand-10/40 absolute ${sz.iconLeft} pointer-events-none`} />
+        <Icon className={`${sz.iconSize} text-brand-10/40 absolute ${sz.iconLeft} pointer-events-none`} aria-hidden="true" />
       )}
       
       <input
@@ -107,21 +130,23 @@ export const Input = React.forwardRef(function Input({
         onChange={handleChange}
         placeholder={placeholder}
         disabled={disabled}
-        className={`w-full h-full glass-control border border-brand-10/15 focus:border-brand-30 hover:border-brand-10/30 text-brand-10 outline-none transition-all font-medium placeholder:text-brand-10/40 disabled:opacity-50 disabled:cursor-not-allowed ${sz.input} ${
+        className={`w-full h-full glass-control border border-brand-10/15 focus:border-brand-30 focus:ring-1 focus:ring-brand-30 hover:border-brand-10/30 text-brand-10 outline-none transition-all font-medium placeholder:text-brand-10/40 disabled:opacity-50 disabled:cursor-not-allowed ${sz.input} ${
           Icon ? sz.plIcon : sz.plNoIcon
-        } ${showClear && hasValue ? sz.prClear : sz.prNoClear}`}
+        } ${canClear ? sz.prClear : sz.prNoClear} ${inputClassName}`}
         {...valueProps}
         {...props}
       />
 
-      {showClear && hasValue && (
+      {canClear && (
         <button
           type="button"
+          tabIndex={-1}
+          aria-label="Clear input"
           onClick={handleClear}
           title="Clear"
-          className={`absolute ${sz.clearBtn} text-brand-10/60 hover:text-brand-10 p-1 cursor-pointer transition-colors`}
+          className={`absolute ${sz.clearBtn} text-brand-10/60 hover:text-brand-10 p-1 cursor-pointer transition-colors focus:outline-none`}
         >
-          <X className={sz.clearIcon} />
+          <X className={sz.clearIcon} aria-hidden="true" />
         </button>
       )}
     </div>
