@@ -116,7 +116,12 @@ function DashboardApp() {
         onClose={() => setIsDrawerOpen(false)}
         title="Settings"
         subtitle="Global Playground Controls"
-        footerText="UI Kit Core Engine"
+        footer={
+          <>
+            <span>UI Kit Core Engine</span>
+            <span className="text-brand-30 font-bold">v0.1.0</span>
+          </>
+        }
       >
         {/* Card 1: Background Wallpaper Controls */}
         <SidebarCard title="Wallpaper Background" icon={ImageIcon}>
