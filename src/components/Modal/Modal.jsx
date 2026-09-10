@@ -137,9 +137,10 @@ export function Modal({
                 type="button"
                 onClick={onClose}
                 title="Close modal"
-                className="w-8 h-8 rounded-lg flex items-center justify-center text-brand-10/60 hover:text-brand-10 hover:bg-white/10 active:scale-95 transition-all cursor-pointer shrink-0 -mr-1.5 -mt-1.5"
+                aria-label="Close modal"
+                className="w-8 h-8 rounded-lg flex items-center justify-center text-brand-10/60 hover:text-brand-10 hover:bg-white/10 active:scale-95 transition-all cursor-pointer shrink-0 -mr-1.5 -mt-1.5 focus-visible:ring-1 focus-visible:ring-brand-30 focus-visible:outline-none"
               >
-                <X className="w-4 h-4" />
+                <X className="w-4 h-4" aria-hidden="true" />
               </button>
             )}
           </div>

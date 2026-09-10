@@ -63,7 +63,7 @@ export function SlidingPill({
             aria-checked={isActive}
             disabled={disabled}
             onClick={() => !disabled && onChange && onChange(opt.value)}
-            className={`relative z-10 flex-1 px-3 py-1 text-center whitespace-nowrap transition-colors font-sans cursor-pointer truncate ${
+            className={`relative z-10 flex-1 px-3 py-1 text-center whitespace-nowrap transition-colors font-sans cursor-pointer truncate rounded-full focus-visible:ring-2 focus-visible:ring-brand-30 focus-visible:outline-none focus-visible:z-20 ${
               isActive ? 'font-bold text-white' : 'font-semibold text-brand-10/50 hover:text-brand-10/70'
             }`}
           >

@@ -45,19 +45,19 @@ export const Checkbox = React.forwardRef(function Checkbox({
           type="checkbox"
           onChange={handleChange}
           disabled={disabled}
-          className="sr-only"
+          className="sr-only peer"
           {...checkedProps}
           {...props}
         />
         <div
-          className={`w-4 h-4 rounded-md border flex items-center justify-center transition-all duration-150 ${
+          className={`w-4 h-4 rounded-md border flex items-center justify-center transition-all duration-150 peer-focus-visible:ring-2 peer-focus-visible:ring-brand-30 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-brand-bg ${
             isChecked
               ? 'bg-brand-30 border-brand-30 shadow-[0_0_8px_rgba(230,57,70,0.45)]'
               : 'bg-brand-60/80 border-brand-60/90 group-hover:border-brand-30/60'
           }`}
         >
           {isChecked && (
-            <Check className="w-2.5 h-2.5 text-white stroke-[3.5]" />
+            <Check className="w-2.5 h-2.5 text-white stroke-[3.5]" aria-hidden="true" />
           )}
         </div>
       </div>

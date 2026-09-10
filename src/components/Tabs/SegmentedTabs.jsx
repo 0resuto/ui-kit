@@ -28,7 +28,7 @@ export function SegmentedTabs({
             role="tab"
             aria-selected={isActive}
             onClick={() => onChange && onChange(tab.id)}
-            className={`flex-1 py-1.5 px-3 rounded-lg text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+            className={`flex-1 py-1.5 px-3 rounded-lg text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer focus-visible:ring-2 focus-visible:ring-brand-30 focus-visible:ring-offset-1 focus-visible:ring-offset-brand-bg focus-visible:outline-none ${
               isActive
                 ? 'bg-brand-30/20 text-brand-10 border border-brand-30/50 shadow-sm font-bold'
                 : 'text-brand-10/60 hover:text-brand-10 hover:bg-brand-60/40 border border-transparent font-semibold'
@@ -39,6 +39,7 @@ export function SegmentedTabs({
                 className={`w-3.5 h-3.5 ${
                   isActive ? 'text-brand-30' : 'text-brand-10/50'
                 }`}
+                aria-hidden="true"
               />
             )}
             <span>{tab.label}</span>

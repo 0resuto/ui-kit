@@ -53,13 +53,14 @@ export function Rail({
                   type="button"
                   onClick={action.onClick}
                   title={action.title}
-                  className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all cursor-pointer active:scale-95 ${
+                  aria-label={action.title}
+                  className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all cursor-pointer active:scale-95 focus-visible:ring-2 focus-visible:ring-brand-30 focus-visible:outline-none ${
                     isActive
                       ? 'bg-brand-30/20 text-brand-30 border border-brand-30/40 shadow-sm'
                       : 'bg-white/10 text-white/70 hover:text-white hover:bg-white/20'
                   }`}
                 >
-                  {Icon && <Icon className="w-4 h-4" />}
+                  {Icon && <Icon className="w-4 h-4" aria-hidden="true" />}
                 </button>
               </React.Fragment>
             );
@@ -77,9 +78,10 @@ export function Rail({
                   type="button"
                   onClick={action.onClick}
                   title={action.title}
-                  className="w-9 h-9 rounded-xl flex items-center justify-center text-white/40 hover:text-white transition-colors cursor-pointer"
+                  aria-label={action.title}
+                  className="w-9 h-9 rounded-xl flex items-center justify-center text-white/40 hover:text-white transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-brand-30 focus-visible:outline-none"
                 >
-                  {Icon && <Icon className="w-4 h-4" />}
+                  {Icon && <Icon className="w-4 h-4" aria-hidden="true" />}
                 </button>
               );
             })}

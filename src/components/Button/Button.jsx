@@ -29,7 +29,7 @@ export const Button = React.forwardRef(function Button({
   ...props
 }, ref) {
   // Base structural classes
-  const baseStyles = 'inline-flex items-center justify-center font-bold select-none cursor-pointer outline-none transition-all duration-150 active:scale-[0.97] disabled:pointer-events-none disabled:opacity-50';
+  const baseStyles = 'inline-flex items-center justify-center font-bold select-none cursor-pointer outline-none transition-all duration-150 active:scale-[0.97] focus-visible:ring-2 focus-visible:ring-brand-30 focus-visible:ring-offset-2 focus-visible:ring-offset-brand-bg focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50';
 
   // Size variants (Standard md = 32px / h-8)
   const sizeStyles = {
@@ -57,7 +57,7 @@ export const Button = React.forwardRef(function Button({
     ghost: 'bg-transparent text-brand-10/70 hover:text-brand-10 hover:bg-white/5 border border-transparent',
 
     // 6. Danger Alert (Critical action with specular highlight)
-    danger: 'bg-accent-red/20 text-red-400 hover:bg-accent-red/30 hover:text-red-300 border border-accent-red/40 shadow-[0_0_12px_rgba(239,68,68,0.15)] shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]',
+    danger: 'bg-accent-red/20 text-accent-red hover:bg-accent-red/30 hover:brightness-110 border border-accent-red/40 shadow-[0_0_12px_rgba(239,68,68,0.15)] shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]',
   };
 
   const currentSize = sizeStyles[size] || sizeStyles.md;
@@ -69,20 +69,21 @@ export const Button = React.forwardRef(function Button({
       ref={ref}
       type={type}
       disabled={disabled || isLoading}
+      aria-busy={isLoading ? 'true' : undefined}
       onClick={onClick}
       className={`${baseStyles} ${currentSize} ${currentVariant} ${widthClass} ${className}`}
       {...props}
     >
       {isLoading ? (
         <>
-          <Loader2 className="w-3.5 h-3.5 animate-spin shrink-0" />
+          <Loader2 className="w-3.5 h-3.5 animate-spin shrink-0" aria-hidden="true" />
           {children && <span>{children}</span>}
         </>
       ) : (
         <>
-          {leftIcon && <span className="shrink-0">{leftIcon}</span>}
+          {leftIcon && <span className="shrink-0" aria-hidden="true">{leftIcon}</span>}
           {children && <span>{children}</span>}
-          {rightIcon && <span className="shrink-0">{rightIcon}</span>}
+          {rightIcon && <span className="shrink-0" aria-hidden="true">{rightIcon}</span>}
         </>
       )}
     </button>
