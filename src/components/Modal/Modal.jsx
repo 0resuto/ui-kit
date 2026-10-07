@@ -1,9 +1,8 @@
-import React, { useEffect } from 'react';
-import { createPortal } from 'react-dom';
+import React, { useEffect, useRef } from 'react';
 import { X } from 'lucide-react';
 
 /**
- * Standard UI Kit Modal / Dialog Component
+ * Standard UI Kit Modal / Dialog Component (Modern Native <dialog>)
  * 
  * @param {boolean} isOpen
  * @param {() => void} onClose
@@ -43,30 +42,19 @@ export function Modal({
   children,
   ...props
 }) {
-  // Lock body scrolling when modal is active
+  const dialogRef = useRef(null);
+
+  // Sync isOpen prop with native dialog showModal/close
   useEffect(() => {
-    if (!isOpen) return;
+    const dialog = dialogRef.current;
+    if (!dialog) return;
 
-    const originalOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-
-    const handleKeyDown = (e) => {
-      if (closeOnEscape && e.key === 'Escape' && onClose) {
-        onClose();
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      document.body.style.overflow = originalOverflow;
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [isOpen, closeOnEscape, onClose]);
-
-  if (!isOpen || typeof document === 'undefined') {
-    return null;
-  }
+    if (isOpen && !dialog.open) {
+      dialog.showModal();
+    } else if (!isOpen && dialog.open) {
+      dialog.close();
+    }
+  }, [isOpen]);
 
   // Size mappings
   const sizeClasses = {
@@ -95,22 +83,48 @@ export function Modal({
     : 'overflow-hidden';
 
   const handleBackdropClick = (e) => {
-    if (e.target === e.currentTarget && closeOnBackdropClick && onClose) {
+    if (!closeOnBackdropClick || !onClose) return;
+    
+    // Check if click was exactly on the dialog's backdrop.
+    // When clicking the ::backdrop, the event target is the <dialog> itself.
+    const dialog = e.currentTarget;
+    if (e.target !== dialog) return;
+
+    // Check if the click coordinates fall within the dialog's content box.
+    // This distinguishes between a click on the backdrop vs a click on the dialog's padding (if any).
+    const rect = dialog.getBoundingClientRect();
+    const isDialogContent = (
+      rect.top <= e.clientY &&
+      e.clientY <= rect.top + rect.height &&
+      rect.left <= e.clientX &&
+      e.clientX <= rect.left + rect.width
+    );
+
+    if (!isDialogContent) {
       onClose();
     }
   };
 
-  return createPortal(
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-label={typeof title === 'string' ? title : 'Modal'}
+  const handleCancel = (e) => {
+    // Native escape key handler
+    e.preventDefault(); // Prevent native close to let React state drive it
+    if (closeOnEscape && onClose) {
+      onClose();
+    }
+  };
+
+  return (
+    <dialog
+      ref={dialogRef}
+      onCancel={handleCancel}
       onClick={handleBackdropClick}
-      className="fixed inset-0 z-[99990] bg-black/65 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 overflow-y-auto overscroll-contain animate-fade-in"
+      closedby={closeOnBackdropClick ? "any" : "closerequest"}
+      aria-label={typeof title === 'string' ? title : 'Modal'}
+      className={`glass-modal p-0 m-auto bg-transparent border-none overflow-visible w-[calc(100vw-2rem)] sm:w-[calc(100vw-3rem)] ${currentSize} focus:outline-none`}
     >
-      {/* Modal Dialog Window */}
+      {/* Inner container providing the actual frosted glass aesthetic and layout constraints */}
       <div
-        className={`w-full ${currentSize} ${heightClass} flex flex-col glass-dropdown rounded-2xl border border-brand-10/15 shadow-2xl dropdown-unroll select-none font-sans text-brand-10 text-left antialiased overflow-hidden overscroll-contain ${className}`}
+        className={`w-full ${heightClass} flex flex-col glass-dropdown rounded-2xl border border-brand-10/15 shadow-2xl select-none font-sans text-brand-10 text-left antialiased overflow-hidden overscroll-contain ${className}`}
         {...props}
       >
         {/* Modal Header */}
@@ -160,8 +174,7 @@ export function Modal({
           </div>
         )}
       </div>
-    </div>,
-    document.body
+    </dialog>
   );
 }
 
