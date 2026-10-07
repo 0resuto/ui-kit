@@ -183,3 +183,74 @@ input[type=number] {
     backdrop-filter: blur(0px);
   }
 }
+
+/* ========================================================================= */
+/* Customizable Select (appearance: base-select)                             */
+/* ========================================================================= */
+
+.glass-select,
+.glass-select::picker(select) {
+  appearance: base-select;
+}
+
+/* Hide native picker icon in Chrome since we inject our own Lucide icon in the <button> */
+.glass-select::picker-icon {
+  display: none;
+}
+
+/* Rotate our custom icon on open */
+.glass-select:open button svg.select-icon {
+  transform: rotate(180deg);
+  color: var(--color-brand-30);
+}
+
+/* The top-layer dropdown menu */
+.glass-select::picker(select) {
+  background-color: rgba(26, 28, 35, 0.97) !important;
+  backdrop-filter: blur(24px) saturate(150%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(150%) !important;
+  box-shadow: 
+    0 8px 18px -4px rgba(0, 0, 0, 0.4), 
+    0 3px 6px -2px rgba(0, 0, 0, 0.25), 
+    0 0 0 1px rgba(255, 255, 255, 0.06), 
+    inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+  padding: 0.375rem;
+  margin-top: 0.25rem;
+  border-radius: 12px;
+  overflow-y: auto;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  
+  /* Entrance animations */
+  transition:
+    display 0.2s allow-discrete,
+    overlay 0.2s allow-discrete,
+    opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  opacity: 0;
+  transform: translateY(-4px);
+}
+
+.glass-select:open::picker(select) {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@starting-style {
+  .glass-select:open::picker(select) {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+/* Hide native checkmark, we will use our own SVG */
+.glass-select option::checkmark {
+  display: none;
+}
+
+/* Show custom checkmark only on checked options */
+.glass-select option svg.check-icon {
+  display: none;
+}
+.glass-select option:checked svg.check-icon {
+  display: block;
+}
