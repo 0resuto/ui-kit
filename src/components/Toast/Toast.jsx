@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { createPortal } from 'react-dom';
 import { CheckCircle2, AlertCircle, AlertTriangle, Info, X } from 'lucide-react';
 
 /**
@@ -107,11 +106,17 @@ export function ToastItem({ toast, onDismiss }) {
   );
 }
 
-/**
- * Toast Container portaled to document.body
- */
 export function ToastContainer({ toasts = [], onDismiss, position = 'bottom-right' }) {
-  if (typeof document === 'undefined' || toasts.length === 0) {
+  const containerRef = React.useRef(null);
+
+  React.useEffect(() => {
+    const el = containerRef.current;
+    if (el && toasts.length > 0 && !el.matches(':popover-open')) {
+      el.showPopover();
+    }
+  }, [toasts]);
+
+  if (toasts.length === 0) {
     return null;
   }
 
@@ -124,16 +129,17 @@ export function ToastContainer({ toasts = [], onDismiss, position = 'bottom-righ
 
   const pos = positionClasses[position] || positionClasses['bottom-right'];
 
-  return createPortal(
+  return (
     <div
+      ref={containerRef}
+      popover="manual"
       aria-live="polite"
-      className={`fixed ${pos} z-[99999] flex flex-col gap-2 w-[calc(100vw-2rem)] max-w-sm pointer-events-none`}
+      className={`fixed ${pos} flex flex-col gap-2 w-[calc(100vw-2rem)] max-w-sm pointer-events-none bg-transparent border-none p-0 m-0 overflow-visible`}
     >
       {toasts.map((t) => (
         <ToastItem key={t.id} toast={t} onDismiss={onDismiss} />
       ))}
-    </div>,
-    document.body
+    </div>
   );
 }
 
